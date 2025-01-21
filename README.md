@@ -1,4 +1,4 @@
-<div align="right">
+<div align="left">
   <img 
     src="mySelf.png" 
     alt="My Self" 
