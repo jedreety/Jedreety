@@ -2,6 +2,6 @@
   <img 
     src="Assets/Images/mySelf.png" 
     alt="My Self" 
-    width="50%" 
+    width="100%" 
   />
 </div>
