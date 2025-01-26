@@ -1,7 +1,7 @@
 <div align="left">
   <img 
-    src="Assets/Image/mySelf.png" 
+    src="Assets/Images/mySelf.png" 
     alt="My Self" 
-    width="50%" 
+    width="100%" 
   />
 </div>
