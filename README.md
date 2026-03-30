@@ -1,6 +1,6 @@
 <div align="left">
   <img 
-    src="Assets/Images/mySelf.png" 
+    src="Assets/Images/banner jed.png" 
     alt="My Self" 
     width="100%" 
   />
