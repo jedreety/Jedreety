@@ -1,0 +1,120 @@
+/* =========================================================
+   Base
+   Reset, body defaults, global behavior, a11y utilities.
+   No component-specific styles live here.
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Lock horizontal axis at the document level. We use `clip`
+   instead of `hidden` because `hidden` creates a scroll
+   container, which breaks `position: fixed` descendants
+   (notably the site header). */
+html,
+body {
+  overflow-x: clip;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Offset anchor jumps by the fixed header height so
+     section anchors don't land under it. Was previously
+     in header.css — moved here because it's a global
+     concern, not a header concern. */
+  scroll-padding-top: var(--header-height);
+  -webkit-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+ol,
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+h1, h2, h3, h4, p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Global selection — themed, no inherited text-shadow.
+   Section-specific overrides are unnecessary now that this
+   sets the baseline. */
+::selection {
+  background-color: var(--selection-bg);
+  color: var(--off-white);
+  text-shadow: none;
+}
+
+
+/* =========================================================
+   A11y utilities
+   ========================================================= */
+
+/* Visually hidden but exposed to assistive tech. Used by
+   the hero h1 (clean reading, bypassing scramble spans)
+   and the about figure heading. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link — invisible until focused. Lets keyboard users
+   jump past the header straight to <main>. */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-4);
+  z-index: var(--z-skip-link);
+  padding: var(--space-3) var(--space-5);
+  background: var(--white);
+  color: var(--bg-deep);
+  font-weight: 600;
+  border-radius: 8px;
+  transition: top var(--transition-base);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+  outline: 2px solid var(--violet-300);
+  outline-offset: 2px;
+}

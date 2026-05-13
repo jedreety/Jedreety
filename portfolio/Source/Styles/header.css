@@ -1,0 +1,172 @@
+/* =========================================================
+   Site header
+   Liquid-glass navigation, fixed at the top of the viewport,
+   above all content. The "My Projects" link gets a featured
+   treatment (animated rainbow text shared with project tags).
+   ========================================================= */
+
+
+/* =========================================================
+   Shell
+   ========================================================= */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-header);
+  height: var(--header-height);
+}
+
+/* Glass layer on a pseudo-element so the header's own
+   content (text, focus rings) isn't affected by the
+   blur or background. */
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  background: rgba(5, 3, 20, 0.55);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+          backdrop-filter: blur(24px) saturate(200%);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:  inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Fallback for browsers without backdrop-filter (rare now):
+   solid darker bg so text stays readable over content. */
+@supports not (backdrop-filter: blur(1px)) {
+  .site-header::before {
+    background: rgba(5, 3, 20, 0.92);
+  }
+}
+
+.site-header__inner {
+  height: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+
+/* =========================================================
+   Brand
+   ========================================================= */
+
+.site-header__brand {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  transition: opacity var(--transition-fast);
+}
+
+.site-header__brand-text {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.site-header__brand:hover {
+  opacity: 0.75;
+}
+
+.site-header__brand:focus-visible {
+  outline: 2px solid var(--violet-300);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+
+/* =========================================================
+   Nav
+   ========================================================= */
+
+.site-nav__list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: 9999px;
+  transition:
+    color            var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.site-nav__link:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.site-nav__link:focus-visible {
+  outline: 2px solid var(--violet-300);
+  outline-offset: 2px;
+  color: var(--text-primary);
+}
+
+
+/* =========================================================
+   Featured link — "My Projects"
+   Uses the shared rainbow gradient + keyframe from
+   components.css. Don't redefine the animation here.
+   ========================================================= */
+
+.site-nav__link--featured {
+  font-size: 1rem;
+  font-weight: 700;
+
+  background: var(--gradient-rainbow);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  animation: rainbow-text-shift 4s linear infinite;
+  transition: filter 400ms var(--ease-out);
+}
+
+/* Override the parent .site-nav__link:hover (which would
+   add a translucent pill bg behind transparent-fill text). */
+.site-nav__link--featured:hover {
+  background-color: transparent;
+  filter: brightness(1.6);
+}
+
+.site-nav__link--featured:focus-visible {
+  outline: 2px solid var(--violet-300);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav__link--featured { animation: none; }
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 580px) {
+  .site-nav__link { font-size: 0.8rem; }
+}
+
+@media (max-width: 550px) {
+  .site-nav__link { font-size: 0.7rem; }
+}

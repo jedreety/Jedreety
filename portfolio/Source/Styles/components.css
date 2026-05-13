@@ -1,0 +1,138 @@
+/* =========================================================
+   Components
+   Shared atoms used by 2+ sections. Lives between base
+   (global reset) and the section files (composition).
+   Add a rule here when a selector starts repeating across
+   sections — not before.
+   ========================================================= */
+
+
+/* =========================================================
+   Section eyebrow
+   Small uppercase label sitting above section titles
+   (Journey, Projects, About). Used in 3 places — earns
+   its keep here.
+   ========================================================= */
+
+.section-eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--violet-300);
+  margin: 0;
+}
+
+
+/* =========================================================
+   Section title
+   The big gradient heading used by Journey and Projects.
+   About has its own variant inside hero.css since it sits
+   in a different visual context (inside the skylight).
+   ========================================================= */
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 0;
+
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+/* =========================================================
+   Button
+   Pill-shaped CTA. Currently only the primary variant
+   exists; add modifiers here when a second style appears
+   instead of redefining the base elsewhere.
+   ========================================================= */
+
+.button {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding: 0 var(--space-8);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform  var(--transition-base),
+    box-shadow var(--transition-base);
+}
+
+.button--primary {
+  background: var(--gradient-button);
+  color: var(--text-on-light);
+  box-shadow:
+    0 0 0   1px rgba(124, 58, 237, 0.40),
+    0 0 40px    rgba(124, 58, 237, 0.35),
+    0 0 100px   rgba(99, 102, 241, 0.18);
+}
+
+.button--primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0   1px rgba(124, 58, 237, 0.60),
+    0 0 60px    rgba(124, 58, 237, 0.55),
+    0 0 140px   rgba(99, 102, 241, 0.28);
+}
+
+.button--primary:focus-visible {
+  outline: 2px solid var(--violet-300);
+  outline-offset: 4px;
+}
+
+
+/* =========================================================
+   Rainbow text — shared animation
+   Animated gradient used by the featured nav link and the
+   project-strip tags. Defined once here so both consumers
+   stay in sync if we re-time it.
+   ========================================================= */
+
+.rainbow-text {
+  background: var(--gradient-rainbow);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: rainbow-text-shift 4s linear infinite;
+}
+
+@keyframes rainbow-text-shift {
+  0%   { background-position:   0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rainbow-text { animation: none; }
+}
+
+
+/* =========================================================
+   Scramble char
+   Emitted by text-scramble.js around the in-flight
+   characters. Currently inherits parent color; styled
+   here in case we want to give it dedicated treatment
+   later (color flicker, glyph shadow, etc.).
+   ========================================================= */
+
+.scramble-char {
+  color: inherit;
+}

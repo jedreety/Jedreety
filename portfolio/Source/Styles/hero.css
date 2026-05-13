@@ -1,0 +1,319 @@
+/* =========================================================
+   Hero
+   Two stacked blocks:
+   1) .hero__landing  — full viewport: title, subtitle, CTA.
+   2) .hero__about    — the about content, reached by
+                        scrolling. Lives visually inside the
+                        dark zone of the skylight video.
+
+   The skylight video, the cursor glow, and the about card
+   are all positioned absolutely relative to .hero so they
+   compose as one scene rather than as three sections.
+   ========================================================= */
+
+.hero {
+  position: relative;
+  background: var(--bg-deep);
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding-top: var(--header-height);
+  z-index: 1;
+}
+
+/* Soft fallback glow at the top — visible even if the
+   skylight video fails to load or is suppressed by
+   reduced-motion. Keeps the page from looking flat. */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(800px, 80vw);
+  height: 100vh;
+  background: radial-gradient(
+    ellipse 40% 70% at 50% 0%,
+    rgba(196, 181, 253, 0.35) 0%,
+    rgba(124,  58, 237, 0.15) 30%,
+    transparent               70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* =========================================================
+   Skylight — decorative video at the top of the hero
+   ========================================================= */
+
+.skylight--hero {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  width: 100%;
+
+  object-fit: cover;
+  object-position: 50% 0%;
+  pointer-events: none;
+  z-index: var(--z-skylight);
+}
+
+
+/* =========================================================
+   Cursor glow — additive halo tracking the cursor
+   Sits ABOVE the skylight, brightens what's underneath via
+   screen blend. JS sets --mx / --my in pixels relative to
+   .hero (see hero-cursor-glow.js).
+   ========================================================= */
+
+.hero__cursor-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-content);
+
+  --mx: 50%;
+  --my: 30%;
+  --glow-size: 380px;
+
+  background: radial-gradient(
+    circle var(--glow-size) at var(--mx) var(--my),
+    rgba(216, 200, 255, 0.12) 0%,
+    rgba(124,  58, 237, 0.05) 40%,
+    transparent               75%
+  );
+  mix-blend-mode: screen;
+
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+}
+
+.hero__cursor-glow.is-active {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__cursor-glow { display: none; }
+}
+
+
+/* =========================================================
+   Landing — first viewport
+   ========================================================= */
+
+.hero__landing {
+  position: relative;
+  z-index: var(--z-content);
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding:
+    clamp(3rem, 20vh, 8rem)
+    var(--container-padding)
+    var(--space-8);
+}
+
+.hero__title {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 12vw, 9rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.hero__name {
+  display: block;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero__subtitle {
+  margin-top: var(--space-5);
+  max-width: 36ch;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--text-secondary);
+}
+
+.hero__cta {
+  margin-top: var(--space-10);
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+
+/* =========================================================
+   About — structured content inside the hero
+   Sits in the dark side of the skylight beam.
+
+   Position & scale are exposed as CSS variables so they
+   can be tuned without touching three different media
+   queries below. Defaults are overridden inside the
+   responsive blocks.
+   ========================================================= */
+
+.hero__about {
+  --about-y-shift: -160px;   /* vertical pull into the beam     */
+  --about-x-shift:  0;       /* horizontal nudge (desktop only) */
+  --about-scale:    0.9;     /* compresses the card slightly    */
+
+  position: relative;
+  z-index: var(--z-content);
+  max-width: var(--container-max);
+  /* Negative margin (not transform-Y) so the shift actually
+     shortens the hero's height — a transform would leave a
+     gap below. */
+  margin: var(--about-y-shift) auto 0;
+  padding: 0;
+  transform: translateX(var(--about-x-shift)) scale(var(--about-scale));
+  transform-origin: left center;
+}
+
+.about-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: clamp(var(--space-8), 5vw, var(--space-16));
+  align-items: center;
+  max-width: var(--about-max-width);
+  padding:
+    clamp(var(--space-8), 4vw, var(--space-12))
+    clamp(var(--space-6), 8vw, var(--space-10));
+}
+
+/* Vertical accent line — echoes the white divider from
+   the design reference, without dominating. */
+.about-card::before {
+  content: '';
+  position: absolute;
+  top: 14%;
+  bottom: 14%;
+  left: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent              0%,
+    rgba(255, 255, 255, 0.18) 20%,
+    rgba(255, 255, 255, 0.18) 80%,
+    transparent              100%
+  );
+}
+
+.about-card__text {
+  padding-left: clamp(var(--space-4), 2vw, var(--space-6));
+}
+
+.about-card__title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: var(--space-3) 0 var(--space-8);
+
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 52ch;
+}
+
+.about-card__body p {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.15vw, 1.125rem);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.about-card__portrait {
+  position: relative;
+  margin: 0;
+  justify-self: center;
+  width: 100%;
+  max-width: 360px;
+}
+
+.about-card__portrait img {
+  /* 247px until we hit the desktop breakpoint, where the
+     image fills its container (max-width: 360px from the
+     figure). Switch handled in the min-width: 988px block. */
+  width: 247px;
+  height: auto;
+  border-radius: 14px;
+  /* Two drop-shadows: violet cast (anchor to the lit world
+     of the skylight) + softer ambient halo. */
+  filter:
+    drop-shadow(0 30px 50px rgba(124, 58, 237, 0.25))
+    drop-shadow(0  0  30px rgba( 91, 33, 182, 0.15));
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .skylight--hero { top: -100px; }
+
+  .hero__subtitle { max-width: 28ch; }
+
+  /* On mobile the skylight lands differently — desktop
+     offsets stop being meaningful. Reset transform; use a
+     near-black backdrop so the about card stays readable
+     when the beam doesn't reach it. */
+  .hero__about {
+    --about-y-shift: calc(-150px - 6vw);
+    --about-x-shift: 0;
+    --about-scale:   1;
+    /* Intentionally distinct from --bg-deep: less violet,
+       more neutral, so the card reads as its own scene. */
+    background-color: #090B0C;
+  }
+
+  .about-card {
+    grid-template-columns: 1fr;
+    padding-top: 0;
+    margin-top: 70px;
+  }
+
+  .about-card::before     { display: none; }
+
+  .about-card__text       { padding-left: 0; order: 2; }
+
+  .about-card__portrait {
+    order: 1;
+    max-width: 220px;
+    margin: 0 auto var(--space-4);
+  }
+}
+
+@media (min-width: 988px) {
+  /* Portrait fills the figure container at desktop size. */
+  .about-card__portrait img { width: 100%; }
+
+  .about-card { margin-inline: auto; }
+
+  .hero__about {
+    --about-x-shift: -60px;
+    transform-origin: center center;
+  }
+}

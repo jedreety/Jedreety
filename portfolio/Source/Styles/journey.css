@@ -1,0 +1,430 @@
+/* =========================================================
+   Journey
+   Vertical timeline with alternating L/R entries. The
+   journey overlaps the hero by a negative margin (set on
+   the section in the HTML / via the cascade video) so the
+   beam originates inside the hero — the two sections share
+   a luminous spine.
+
+   The seam at the top isn't a blur of two backgrounds (both
+   sides are uniform bg-deep, nothing to blur). It's a
+   gradient curtain that fades from solid bg-deep down to
+   transparent, which lets the cascade video bleed up.
+   ========================================================= */
+
+.journey {
+  position: relative;
+  /* clip-path inset(0 -100vw 0 -100vw) lets the mobile
+     reading-aid band reach full viewport width without
+     escaping the vertical bounds of the section. */
+  clip-path: inset(0 -100vw 0 -100vw);
+  background: var(--bg-deep);
+  padding-bottom: 200px;
+  overflow-y: clip;
+}
+
+
+/* =========================================================
+   Top seam — gradient curtain over the cascade beam
+   ========================================================= */
+
+.journey::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-deep)         0%,
+    rgba(5, 3, 20, 0.92)  22%,
+    rgba(5, 3, 20, 0.60)  55%,
+    rgba(5, 3, 20, 0.25)  82%,
+    transparent          100%
+  );
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+
+/* =========================================================
+   Bottom fade — clean handoff to projects
+   ========================================================= */
+
+.journey::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 240px;
+  background: linear-gradient(
+    to bottom,
+    transparent   0%,
+    var(--bg-deep) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+
+/* =========================================================
+   Skylight cascade — beam that extends from the hero
+   into the journey. The negative top of the journey
+   (handled by the .journey margin in the hero block)
+   plus top: 0 here creates the overlap.
+   ========================================================= */
+
+.skylight--cascade {
+  /* height = section_height * scale + offset */
+  --cascade-height-scale:  2;
+  --cascade-height-offset: 0px;
+  /* X nudge from section center, as % of the video's OWN
+     width. Negative = left, positive = right. */
+  --cascade-x-shift:      -5%;
+
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(calc(-50% + var(--cascade-x-shift)));
+
+  height: calc(100% * var(--cascade-height-scale) + var(--cascade-height-offset));
+  width: auto;
+  /* Override the base.css `max-width: 100%` on videos so
+     the cascade can extend horizontally past the section. */
+  max-width: none;
+
+  object-position: center top;
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+/* =========================================================
+   Inner content — sits above seam and cascade
+   ========================================================= */
+
+.journey__inner {
+  position: relative;
+  z-index: 3;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-16) var(--container-padding) 0;
+}
+
+.journey__header {
+  text-align: center;
+  margin-bottom: var(--space-20);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+
+/* =========================================================
+   Timeline — alternating L/R, no card containers
+   ========================================================= */
+
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6rem;
+  padding: var(--space-20) 0 var(--space-24);
+}
+
+.timeline__item {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+.timeline__item--left  { justify-content: flex-start; }
+.timeline__item--right { justify-content: flex-end;   }
+
+/* Marker is currently disabled. The element may still be
+   in the HTML for future re-activation — keep it hidden.
+   To re-enable: remove this rule and restore styles from
+   git history (commit before the refactor). */
+.timeline__marker { display: none; }
+
+
+/* =========================================================
+   Defensive reveal pattern
+   Items are visible by default in CSS. JS adds .is-ready
+   on the timeline → items become hidden, then .is-visible
+   reveals them on scroll. If the JS fails to load, items
+   stay visible. See timeline-reveal.js.
+   ========================================================= */
+
+.timeline.is-ready .timeline__item {
+  opacity: 0;
+  /* `translate` (separate property) composes with the float
+     animation on .timeline__entry (which uses `transform`),
+     so the two don't fight each other. */
+  translate: 0 32px;
+  transition:
+    opacity    900ms var(--ease-out),
+    translate 1100ms var(--ease-out);
+}
+
+/* Direction-aware drift: left items come from the left,
+   right items from the right. Reinforces the rhythm
+   instead of fighting it. */
+.timeline.is-ready .timeline__item--left  { translate: -36px 28px; }
+.timeline.is-ready .timeline__item--right { translate:  36px 28px; }
+
+.timeline.is-ready .timeline__item.is-visible {
+  opacity: 1;
+  translate: 0 0;
+}
+
+
+/* =========================================================
+   Entry — pure typography, floaty
+   ========================================================= */
+
+.timeline__entry {
+  width: calc(50% - var(--space-16));
+  max-width: 480px;
+
+  filter: drop-shadow(0 0 28px rgba(124, 58, 237, 0.18));
+
+  /* Same duration + easing for all three properties so the
+     entry feels like one object responding to hover, not
+     three properties drifting at different speeds.
+     `translate` and `scale` are separate from `transform`,
+     so the float animation keeps composing. */
+  transition:
+    filter    550ms var(--ease-out),
+    translate 550ms var(--ease-out),
+    scale     550ms var(--ease-out);
+}
+
+.timeline__item--left  .timeline__entry {
+  text-align: right;
+  margin-right: var(--space-16);
+}
+
+.timeline__item--right .timeline__entry {
+  text-align: left;
+  margin-left: var(--space-16);
+}
+
+.timeline__entry:hover {
+  translate: 0 -10px;
+  scale: 1.02;
+  /* Two drop-shadows do different jobs:
+     - First (14px down)  → cast shadow, sells the lift.
+     - Second (no offset) → ambient violet glow.
+     Together they read as "floating above a lit floor". */
+  filter:
+    drop-shadow(0 14px 36px rgba(124,  58, 237, 0.32))
+    drop-shadow(0  0  60px rgba(196, 181, 253, 0.25));
+}
+
+.timeline__entry:hover .timeline__role {
+  filter: brightness(1.12);
+}
+
+/* Float animation — varied durations + negative delays so
+   the items don't all bob in sync. */
+.timeline__entry {
+  animation: timeline-float 8s ease-in-out infinite;
+}
+
+.timeline__item:nth-child(1) .timeline__entry { animation-duration: 7.0s; animation-delay:  0s;   }
+.timeline__item:nth-child(2) .timeline__entry { animation-duration: 8.5s; animation-delay: -2.3s; }
+.timeline__item:nth-child(3) .timeline__entry { animation-duration: 6.5s; animation-delay: -4.1s; }
+.timeline__item:nth-child(4) .timeline__entry { animation-duration: 9.0s; animation-delay: -1.6s; }
+.timeline__item:nth-child(5) .timeline__entry { animation-duration: 7.5s; animation-delay: -3.4s; }
+.timeline__item:nth-child(6) .timeline__entry { animation-duration: 8.0s; animation-delay: -0.7s; }
+
+@keyframes timeline-float {
+  0%, 100% { transform: translateY(0); }
+  25%, 75% { transform: translate(-3px,  3px); }
+  50%      { transform: translate( 3px, -3px); }
+}
+
+
+/* =========================================================
+   Typography
+   ========================================================= */
+
+.timeline__date {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--violet-300);
+  margin-bottom: var(--space-4);
+  text-shadow: 0 0 20px rgba(196, 181, 253, 0.4);
+}
+
+.timeline__role {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0 0 var(--space-3);
+
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Picked up by .timeline__entry:hover .timeline__role */
+  transition: filter 500ms var(--ease-out);
+}
+
+.timeline__place {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-4);
+  opacity: 0.85;
+}
+
+.timeline__description {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 42ch;
+}
+
+/* Right-align the description for left-side items so it
+   stays flush with the role title above. */
+.timeline__item--left .timeline__description {
+  margin-left: auto;
+}
+
+
+/* =========================================================
+   Reduced motion
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline.is-ready .timeline__item,
+  .timeline__entry,
+  .journey::before {
+    animation: none;
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .journey {
+    padding: var(--space-16) 0 var(--space-20);
+    /* Safety net: ensure no horizontal leak under the
+       full-bleed mobile reading band below. */
+    overflow-x: clip;
+  }
+
+  .journey::before { height: 240px; }
+
+  .timeline { gap: 7rem; }
+
+  /* On mobile everything is left-aligned, so the L/R drama
+     can't read. Stack entries left, neutralize the
+     horizontal slide. */
+  .timeline__item--left,
+  .timeline__item--right {
+    justify-content: flex-start;
+  }
+
+  .timeline__item--left  .timeline__entry,
+  .timeline__item--right .timeline__entry {
+    width: calc(100% - 56px);
+    margin: 0 0 0 56px;
+    text-align: left;
+  }
+
+  .timeline__item--left .timeline__description {
+    margin-left: 0;
+  }
+
+  .timeline.is-ready .timeline__item--left,
+  .timeline.is-ready .timeline__item--right {
+    translate: 0 32px;
+  }
+
+  /* Re-assert the visible state — source-order specificity
+     would otherwise let the desktop rule above win. */
+  .timeline.is-ready .timeline__item.is-visible {
+    translate: 0 0;
+  }
+
+  /* Per-item stacking context so the reading-aid band's
+     z:-1 stays contained inside its own item. */
+  .timeline__item {
+    position: relative;
+    z-index: 0;
+  }
+
+  /* Subtle reading aid behind the entry — dimming + blur to
+     lift the text off the cascade beam. Top & bottom feather
+     out via mask-image so the dim zone bleeds into the beam
+     instead of declaring a hard edge (= no "card" reading). */
+  .timeline__item::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+
+    /* Hug the entry tightly — less surface = less presence. */
+    inset-block: calc(-1 * var(--space-3));
+
+    /* Full-bleed horizontally. */
+    left: 50%;
+    width: 100vw;
+    height: calc(100% + 70px);
+    transform: translateX(-50%);
+
+    /* Floor of "you can tell it's there"; below 30% the
+       cascade wins and legibility suffers. */
+    background: rgba(5, 3, 20, 0.14);
+
+    -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+
+    /* Feather top + bottom into the cascade. */
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent   0%,
+      black        20%,
+      black        80%,
+      transparent 100%
+    );
+            mask-image: linear-gradient(
+      to bottom,
+      transparent   0%,
+      black        20%,
+      black        80%,
+      transparent 100%
+    );
+  }
+
+  /* Without backdrop-filter, the bg alone has to carry
+     legibility — bump opacity. */
+  @supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .timeline__item::before {
+      background: rgba(5, 3, 20, 0.60);
+    }
+  }
+}

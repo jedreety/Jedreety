@@ -1,0 +1,109 @@
+/* =========================================================
+   Design tokens
+   Single source of truth for the visual identity. Every
+   other stylesheet reads from here — change a value below
+   and the whole site follows.
+   ========================================================= */
+
+/* Fonts (Fontshare). Swap by editing the URL only. */
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@500,700,800&f[]=satoshi@400,500,700&display=swap');
+
+:root {
+
+  /* -- Backgrounds --------------------------------------- */
+  --bg-deep:        #050314;   /* near-black, violet undertone     */
+  --bg-section:     #0a0820;   /* one notch lighter for sections   */
+  --bg-elevated:    #14112e;   /* elevated surfaces (strips, cards) */
+
+  /* -- Violet / blue scale ------------------------------- */
+  --violet-100:     #e9d5ff;
+  --violet-300:     #c4b5fd;
+  --violet-500:     #7c3aed;   /* primary */
+  --violet-700:     #5b21b6;
+  --blue-500:       #3b82f6;
+  --blue-700:       #1e3a8a;
+  --blue-900:       #0f172a;
+
+  /* -- Luminous accents ---------------------------------- */
+  --white:          #ffffff;
+  --off-white:      #fdf7fe;   /* warm white for accent text */
+
+  /* -- Text ---------------------------------------------- */
+  --text-primary:   #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-tertiary:  rgba(255, 255, 255, 0.5);
+  --text-on-light:  #2a0e6b;   /* for buttons on light bg */
+
+  /* -- Selection ----------------------------------------- */
+  --selection-bg:   rgba(107, 61, 180, 0.25);
+
+  /* -- Gradients ----------------------------------------- */
+  --gradient-title: linear-gradient(
+    135deg,
+    var(--white)     0%,
+    #d5d8f6         50%,
+    var(--off-white) 100%
+  );
+  --gradient-violet-blue: linear-gradient(
+    180deg,
+    var(--violet-500) 0%,
+    var(--blue-700)   100%
+  );
+  --gradient-button: linear-gradient(
+    180deg,
+    #f0eaff 0%,
+    #d5c9ff 100%
+  );
+  /* Animated rainbow used by the featured nav link and the
+     project-strip tags. Defined once, consumed by name. */
+  --gradient-rainbow: linear-gradient(
+    90deg,
+    var(--violet-300) 0%,
+    var(--violet-500) 25%,
+    var(--blue-500)   50%,
+    var(--violet-500) 75%,
+    var(--violet-300) 100%
+  );
+
+  /* -- Typography ---------------------------------------- */
+  --font-display:   'Cabinet Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body:      'Satoshi',        -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* -- Layout -------------------------------------------- */
+  --header-height:      64px;
+  --container-max:      1280px;
+  --container-padding:  clamp(1.25rem, 3vw, 2.5rem);
+  --about-max-width:    950px;
+
+  /* -- Spacing scale ------------------------------------- */
+  --space-1:   0.25rem;
+  --space-2:   0.5rem;
+  --space-3:   0.75rem;
+  --space-4:   1rem;
+  --space-5:   1.25rem;
+  --space-6:   1.5rem;
+  --space-8:   2rem;
+  --space-10:  2.5rem;
+  --space-12:  3rem;
+  --space-16:  4rem;
+  --space-20:  5rem;
+  --space-24:  6rem;
+
+  /* -- Effects ------------------------------------------- */
+  --blur-glass:   saturate(180%) blur(20px);
+  --shadow-glow:  0 0 80px rgba(124, 58, 237, 0.3);
+
+  /* -- Motion -------------------------------------------- */
+  --ease-out:        cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out:     cubic-bezier(0.65, 0, 0.35, 1);
+  --transition-fast: 180ms var(--ease-out);
+  --transition-base: 250ms var(--ease-out);
+  --transition-slow: 600ms var(--ease-out);
+
+  /* -- Z-index scale ------------------------------------- */
+  --z-skylight:    1;
+  --z-content:     2;
+  --z-overlay:     3;
+  --z-header:      10;
+  --z-skip-link:   100;
+}
