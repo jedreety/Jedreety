@@ -5,10 +5,10 @@
    no-op if its target element isn't in the page.
    ========================================================= */
 
-import { initTextScramble }     from './components/text-scramble.js';
-import { initHeroCursorGlow }   from './components/hero-cursor-glow.js';
-import { initTimelineReveal }   from './components/timeline-reveal.js';
-import { initProjectsCarousel } from './components/projects-carousel.js';
+import { initTextScramble }     from './Components/text-scramble.js';
+import { initHeroCursorGlow }   from './Components/hero-cursor-glow.js';
+import { initTimelineReveal }   from './Components/timeline-reveal.js';
+import { initProjectsCarousel } from './Components/projects-carousel.js';
 
 function init() {
   initTextScramble();
