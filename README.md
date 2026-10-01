@@ -14,6 +14,10 @@
 
 <br>
 
+<a href="https://github.com/jedreety/Mendel"><img src="Assets/Images/mendel.webp" width="100%" alt="Mendel: trading bots that evolve on your GPU, and an engine that checks every number"></a>
+
+<br>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="Assets/Images/signature-dark.webp">
   <img src="Assets/Images/signature-light.webp" width="100%" alt="A knight holding a cat, beside the motto: in code we trust">
